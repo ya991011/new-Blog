@@ -14,12 +14,12 @@
             <el-form-item label="用户名" prop="username">
               <el-input v-model="ruleForm.username"></el-input>
             </el-form-item>
-            <el-form-item label="密码" prop="password">
-              <el-input v-model="ruleForm.password" type="password"></el-input>
+            <el-form-item label="密码" prop="pass">
+              <el-input v-model="ruleForm.pass" type="password"></el-input>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="submitForm('ruleForm')"
-                >立即创建</el-button
+                >登录</el-button
               >
               <el-button @click="resetForm('ruleForm')">重置</el-button>
             </el-form-item>
@@ -38,14 +38,14 @@ export default {
     return {
       ruleForm: {
         username: "",
-        password: "",
+        pass: "",
       },
       rules: {
         username: [
           { required: true, message: "请输入用户名", trigger: "blur" },
           { min: 3, max: 8, message: "长度在 3 到 8 个字符", trigger: "blur" },
         ],
-        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+        pass: [{ required: true, message: "请输入密码", trigger: "blur" }],
       },
     };
   },
@@ -55,9 +55,18 @@ export default {
         if (valid) {
           try {
             const result = await post(this.ruleForm);
+            console.log(result);
             if (result.data.errno == 0) {
               const token = result.data.data.token;
               window.sessionStorage.setItem("token", token);
+              const userInfo = {
+                id: result.data.data.result.id,
+                username: result.data.data.result.username,
+              };
+              window.sessionStorage.setItem(
+                "userInfo",
+                JSON.stringify(userInfo)
+              );
               this.$router.push("/");
             }
           } catch {

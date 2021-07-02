@@ -1,6 +1,6 @@
 // 创建博客
 
-const {  Blog, User } = require('../database/model/index')
+const {  Blog, op, User, Comm } = require('../database/model/index')
 const { PAGESIZE } = require('../config/constans')
 
 // 引入token解析用户信息
@@ -8,7 +8,7 @@ var jwt = require('jsonwebtoken');
 const { SECRET } = require("../config/constans");
 
 
-
+// 创建博客
 async function createBlog({ title, region, content, imageUrl},token){
     const userInfo = jwt.verify(token,SECRET)
     const user_id = userInfo.id
@@ -41,7 +41,10 @@ async function blogList(pageIndex){
         include: [
             {
                 model: User,
-                attributes:['id','nickname','picture']
+                attributes:['id','username','picture']
+            },
+            {
+                model:Comm
             }
         ]
     })
@@ -58,13 +61,15 @@ async function blogList(pageIndex){
 
 // 加载博客详情
 async function blogDetail(id){
-    // console.log(id)
     const result = await Blog.findOne({
         where:{id},
         include:[
             {
                 model:User,
-                attributes:['id','nickname','picture']
+                attributes:['id','username','picture']
+            },
+            {
+                model:Comm,
             }
         ]
     })
@@ -76,8 +81,135 @@ async function blogDetail(id){
 
 
 
+// 个人博客列表
+async function getMyBlog(token,page){
+    const userInfo = jwt.verify(token,SECRET)
+    const user_id = userInfo.id
+    const result = await Blog.findAndCountAll({
+        limit: 3,
+        offset: 3 * (page-1),
+        where:{ user_id },
+        order:[
+            ['id','desc']
+        ],
+        include:[
+            {
+                model:Comm,
+            }
+        ]
+    })
+    let blogList = result.rows.map(row=>row.dataValues)
+
+    return {
+        blogList,
+        count:result.count
+    }
+}
+
+
+// 代码博客
+async function getCodeBlog(page){
+    const result = await Blog.findAndCountAll({
+        limit: 5,
+        offset: 5 * (page-1),
+        where:{ region: "代码人生"},
+        include:[
+            {
+                model:User,
+                attributes:['username','picture']
+            },
+            {
+                model:Comm,
+            }
+
+        ],
+        order:[
+            ['id','desc']
+        ]
+    })
+    let codeBlog = result.rows.map(row=>row.dataValues)
+    return {
+        codeBlog,
+        count: result.count,
+        pagesize:9
+    }
+}
+
+// Life博客
+async function getLifeBlog(){
+    const result = await Blog.findAndCountAll({
+        where:{ region: "流年岁月"},
+        include:[
+            {
+                model:User,
+                attributes:['username','picture']
+            }
+        ]
+    })
+    let lifeBlog = result.rows.map(row=>row.dataValues)
+    return {
+        lifeBlog,
+        count: result.count
+    }
+}
+
+// 个人归档
+async function getAllBlog(token){
+    const userInfo = jwt.verify(token,SECRET)
+    const user_id = userInfo.id
+    const result = await Blog.findAll({
+        where:{user_id},
+        attributes:[
+            'title','updatedAt'
+        ],
+        order:[
+            ['id','desc']
+        ]
+    })
+    if(!result){
+        return result
+    }
+    return result
+
+}
+
+
+// 点赞
+async function likenumber(id, like){
+    const result = await Blog.update({like},{
+        where:{id}
+    })
+
+    return result[0] > 0 //更新成功
+
+}
+
+// 搜索
+async function Serach(title){
+    const result = await Blog.findAll({
+        where:{
+            title:{
+                [op.like] : `%${title}%`
+            },
+        },
+        include:[
+            {
+                model: User,
+                attributes:['username','picture']
+            }
+        ]
+    })
+    return result
+}
+
 module.exports= {
     createBlog,
     blogList,
-    blogDetail
+    blogDetail,
+    getMyBlog,
+    getCodeBlog,
+    getLifeBlog,
+    getAllBlog,
+    likenumber,
+    Serach
 }

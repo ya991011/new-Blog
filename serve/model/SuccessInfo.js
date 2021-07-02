@@ -13,5 +13,11 @@
     },
     updateSuccess:{
          message:'修改成功'
+    },
+    SuccessInfo: {
+         message:'发表成功'
+    },
+    AttentionSuccess: {
+         mesage:'关注成功'
     }
 }

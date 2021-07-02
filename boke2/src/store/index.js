@@ -4,8 +4,14 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {},
-  mutations: {},
+  state: {
+    serachData: [],
+  },
+  mutations: {
+    serach(state, data) {
+      state.serachData = data;
+    },
+  },
   actions: {},
   modules: {},
 });

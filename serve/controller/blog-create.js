@@ -1,8 +1,9 @@
 
 
 
-const { createBlog, blogList, blogDetail } = require('../service/blog')
-const { createBlogFailInfo, getblogListInfo } = require('../model/ErrorInfo')
+const { createBlog, blogList, blogDetail,  getMyBlog,
+    getCodeBlog, getLifeBlog, getAllBlog,likenumber, Serach} = require('../service/blog')
+const { createBlogFailInfo, getblogListInfo, setLike } = require('../model/ErrorInfo')
 const { SuccessModel, ErrorModel } = require('../model/ResModel')
 const { getUserInfoSuccess } = require('../model/SuccessInfo')
 
@@ -44,8 +45,69 @@ async function getBlogDetail(id){
     return new SuccessModel(getUserInfoSuccess,result)
 }
 
+
+// 个人博客列表
+async function getBlogListMy(token,page){
+    const result = await getMyBlog(token,page)
+    if(!result){
+        return new ErrorModel(getblogListInfo)
+    }
+    return new SuccessModel(getUserInfoSuccess, result)
+}
+
+// 代码博客
+async function getMyCodeBlog(page){
+    const result = await getCodeBlog(page)
+    if(!result){
+        return new ErrorModel(getblogListInfo)
+    }
+    return new SuccessModel(getUserInfoSuccess, result)
+}
+
+// life博客
+async function getMyLifeBlog(){
+    const result = await getLifeBlog()
+    if(!result){
+        return new ErrorModel(getblogListInfo)
+    }
+    return new SuccessModel(getUserInfoSuccess, result)
+}
+
+// 个人归档
+async function getMyAllBlog(token){
+    const result = await getAllBlog(token)
+    if(!result){
+        return new ErrorModel(getblogListInfo)
+    }
+    return new SuccessModel(getUserInfoSuccess, result)
+}
+
+// 点赞
+async function setlike(id, like){
+    const result = await likenumber(id, like)
+    if(!result){
+        return new ErrorModel(setLike)
+    }
+    return new SuccessModel()
+}
+
+// 搜索
+async function getSerach(title){
+    const result = await Serach(title)
+    if(!result){
+        return new ErrorModel()
+    }
+    return new SuccessModel(getUserInfoSuccess,result)
+}
+
 module.exports = {
     create,
+    getBlogDetail,
     getBlogList,
-    getBlogDetail
+    getBlogListMy,
+    getMyCodeBlog,
+    getMyLifeBlog,
+    getMyAllBlog,
+    setlike,
+    getSerach
 }

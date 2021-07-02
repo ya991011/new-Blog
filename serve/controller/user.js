@@ -7,12 +7,12 @@ const {
 
 const { ErrorModel, SuccessModel } = require('../model/ResModel')
 const { loginSuccess, getUserInfoSuccess, updateSuccess } = require('../model/SuccessInfo')
-const { getUserInfo, getPersonal, updateUserInfo, getImage } = require('../service/user')
+const { getUserInfo, getPersonal, updateUserInfo, getImage, getCenter } = require('../service/user')
 
 
 // 登录
-async function login(ctx,username,password){
-    const userInfo = await getUserInfo(username,password)
+async function login(ctx,username,pass){
+    const userInfo = await getUserInfo(username,pass)
     if(!userInfo){
         return new ErrorModel(loginFailInfo)
     }else{
@@ -49,9 +49,21 @@ async function getUserImage(ctx,token){
     return result
 }
 
+// 个人中心
+async function getPersonCenter(ctx,id){
+    console.log(id)
+    const result = await getCenter(id)
+    if(!result){
+        return new ErrorModel(changeInfoFailInfo)
+    }
+    return new SuccessModel(getUserInfoSuccess, result)
+
+}
+
 module.exports = {
     login,
     getPerson,
     editUserInfo,
-    getUserImage
+    getUserImage,
+    getPersonCenter
 }

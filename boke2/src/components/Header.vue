@@ -15,8 +15,15 @@
       </div>
       <!-- 搜索框 -->
       <div class="input">
-        <el-input v-model="input" placeholder="请输入内容" clearable>
-        </el-input>
+        <input
+          v-model="input"
+          placeholder="请输入关键字"
+          clearable
+          class="serach"
+        />
+        <el-button type="primary" class="btn" round @click="getserachList"
+          >搜索</el-button
+        >
       </div>
     </nav>
     <!-- 头像 -->
@@ -27,11 +34,12 @@
     <div class="create_blog" @click="toCreate" ref="create">
       <div class="create">+</div>
     </div>
+    <!-- {{getserachList}} -->
   </div>
 </template>
 
 <script>
-import { getUserImage } from "../utils/http";
+import { getUserImage, getSerach } from "../utils/http";
 export default {
   props: ["currentIndex"],
   data() {
@@ -40,8 +48,9 @@ export default {
         { text: "首页", to: { name: "Home" } },
         { text: "代码", to: { name: "Code" } },
         { text: "生活", to: { name: "Life" } },
-        { text: "归档", to: { name: "SumUp" } },
+        { text: "个人归档", to: { name: "SumUp" } },
       ],
+      // 输入框数据
       input: "",
       UserImage: "",
     };
@@ -49,10 +58,31 @@ export default {
   created() {
     this.getImage();
   },
+  computed: {},
   methods: {
+    async getserachList() {
+      if (this.input == "") {
+        this.$message({
+          type: "error",
+          message: "请先输入关键字！",
+        });
+        return;
+      }
+      const data = {
+        title: this.input,
+      };
+      const result = await getSerach(data);
+      console.log(result);
+      this.$store.commit("serach", result.data.data);
+      this.$router.replace({
+        path: "/serach",
+        query: {
+          title: this.input,
+        },
+      });
+    },
     async getImage() {
       const token = window.sessionStorage.getItem("token");
-      console.log(token);
       if (!token) {
         this.UserImage = "http://localhost:3000/format.jpg";
       } else {
@@ -67,13 +97,16 @@ export default {
     toPerson() {
       const token = window.sessionStorage.getItem("token");
       if (token) {
-        this.$router.push("/personal");
+        let newpage = this.$router.resolve({
+          name: "Personal",
+        });
+        window.open(newpage.href, "_blank");
       } else {
         this.$message({
           type: "error",
           message: "请先登录！",
         });
-        this.$router.push("/login");
+        this.$router.push("/personal");
       }
     },
   },
@@ -116,7 +149,7 @@ export default {
     opacity: 1;
   }
   .header {
-    width: 800px;
+    width: 1200px;
     position: absolute;
     top: 20px;
     left: 50%;
@@ -133,13 +166,23 @@ export default {
       }
     }
     .input {
-      display: inline-block;
+      width: 290px;
+      border: 3px solid #fff;
+      border-radius: 23px;
+      float: left;
+      .serach {
+        width: 200px;
+        height: 43px;
+        padding: 0 10px;
+        float: left;
+        outline: none;
+        border: none;
+        background-color: transparent;
+      }
       .btn {
+        float: left;
         width: 70px;
-        height: 35px;
-        position: absolute;
-        top: 0;
-        right: 0;
+        height: 43px;
       }
     }
   }

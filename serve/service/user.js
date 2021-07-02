@@ -1,6 +1,6 @@
 
 
-const { User } = require('../database/model/index')
+const { User, Blog } = require('../database/model/index')
 
 const { SECRET } = require('../config/constans')
 const { formatUser, _formatPicture } = require('./_format')
@@ -8,22 +8,22 @@ const { formatUser, _formatPicture } = require('./_format')
 var jwt = require('jsonwebtoken');
 
 // 登录
-async function getUserInfo(username,password1){
+async function getUserInfo(username,pass){
     //  通过用户名查找用户是否存在，存在判断密码是否与数据库相等
         const result = await User.findOne({
-        username,
+        where:{username},
         attributes:['id','username','password']})
         if(!result){
             return result
         }
         else{
-            if(result.password!==password1){
+            if(result.password!==pass){
                 return
             }
             const { id, username, password } = result
             const userInfo = {id, username, password}
-            var token = jwt.sign(userInfo, SECRET,{expiresIn: '2d'});
-            return { token }
+            const token = jwt.sign(userInfo, SECRET,{expiresIn: '1d'});
+            return  { token, result }
         }
 
 }
@@ -31,8 +31,8 @@ async function getUserInfo(username,password1){
 // 个人信息查询
 async function getPersonal(tokenn){
     const userInfo = jwt.verify(tokenn,SECRET)
-    const user_id = userInfo.id
-    const result = await User.findOne({user_id})
+    const username = userInfo.username
+    const result = await User.findOne({where:{username}})
     if(!result){
         return result
     }
@@ -57,9 +57,9 @@ async function updateUserInfo(userInfo){
 
 async function getImage(token){
     const userInfo = jwt.verify(token,SECRET)
-    const user_id = userInfo.id
+    const id = userInfo.id
     const result = await User.findOne({
-        user_id:user_id,
+        where:{ id },
         attributes:['picture']
     })
     if(!result){
@@ -69,6 +69,24 @@ async function getImage(token){
     return formatRes
 }
 
+// 个人中心
+
+async function getCenter(id){
+    console.log(id)
+    const result = await User.findOne({
+        where:{ id: id },
+    })
+    const result2 = await Blog.findAll({
+        where:{ user_id:id },
+    })
+    if(!result && result2){
+        return result && result2
+    }
+    return {
+        result, result2
+    }
+}
+
 
 
 module.exports = {
@@ -76,4 +94,5 @@ module.exports = {
     getPersonal,
     updateUserInfo,
     getImage,
+    getCenter
 }

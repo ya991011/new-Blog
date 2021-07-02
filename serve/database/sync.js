@@ -1,7 +1,10 @@
 const seq = require('./seq')
 
-require('./model/Blog')
-require('./model/User')
+// require('./model/Blog')
+// require('./model/User')
+// require('./model/Comment')
+// require('./model/Answer')
+require('./model/UserRelation')
 
 
 // 测试连接

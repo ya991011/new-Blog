@@ -14,7 +14,11 @@ export default {};
   width: 100%;
   line-height: 30px;
   text-align: center;
-  color: #333;
+  color: rgba(255, 255, 255, 0.3);
   font-size: 12px;
+  background: rgba(35, 40, 45, 1);
+  // position: fixed;
+  // bottom: 0;
+  // left: 0;
 }
 </style>

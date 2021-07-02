@@ -1,5 +1,6 @@
 const Sequelize  = require('sequelize')
 const seq = require('../seq')
+const op = Sequelize.Op
 
 
 const Blog = seq.define('blog',{
@@ -23,6 +24,13 @@ const Blog = seq.define('blog',{
         type:Sequelize.TEXT,
         allowNull:false
     },
+    like:{
+        type:Sequelize.DECIMAL,
+        defaultValue:0,
+    }
 })
 
-module.exports = Blog
+module.exports = {
+    Blog,
+    op
+}

@@ -8,9 +8,8 @@ const { login } = require('../controller/user')
 router.prefix('/api')
 
 router.post('/login', async(ctx,next)=>{
-    const {username,password}  = ctx.request.body
-    const userInfo = {username,password}
-    ctx.body =  await login(ctx,username,password)
+    const {username,pass}  = ctx.request.body
+    ctx.body =  await login(ctx,username,pass)
 
 })
 

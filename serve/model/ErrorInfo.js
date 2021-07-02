@@ -74,8 +74,28 @@
         errno: 11002,
         message: '删除微博失败，请重试'
     },
+    // 服务器错误
     getblogListInfo: {
         errno:11003,
         message: '当前网络状态不佳，请稍后重试！'
+    },
+    // 获取评论失败
+    getCommListInfo: {
+        errno:11004,
+        message: '获取评论失败！'
+    },
+    // 发表评论失败
+    setCommentFail: {
+        errno:11005,
+        message: '发表评论失败，请稍后重试！'
+
+    },
+    setLike :{
+        errno:11006,
+        message: '网络不佳，请稍后重试！'
+    },
+    query :{
+        errno:11007,
+        message: '查询失败!'
     }
 }

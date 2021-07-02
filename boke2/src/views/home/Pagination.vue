@@ -2,35 +2,33 @@
   <!-- 分页 -->
   <div class="block">
     <el-pagination
-      :background="true"
-      :page-size="blogList.PAGESIZE"
-      layout="total, prev, pager, next"
-      :total="blogList.count"
-      @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
+      :page-size="pageList.PAGESIZE"
+      layout="total, prev, pager, next"
+      :total="pageList.count"
     >
     </el-pagination>
   </div>
 </template>
 
 <script>
-import { getBlogList } from "../utils/http";
+import { getBlogList } from "../../utils/http";
 export default {
   data() {
     return {
-      currentPage4: 4,
       blogList: {},
+      pageList: [],
+      total: null,
     };
   },
   methods: {
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
     async handleCurrentChange(val) {
       const page = { page: val };
       const result = await getBlogList(page);
       console.log(result);
       this.blogList = result.data.data.blogList;
+      this.pageList = result.data.data;
+      this.total = result.data.data.count;
       this.$emit("event", this.blogList);
     },
   },

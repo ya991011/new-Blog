@@ -7,108 +7,25 @@
       class="img-box"
       @mouseover="handledesc(index)"
       @mouseout="handledesc2(index)"
+      @click="toDetail(item.id)"
     >
       <el-card class="card">
-        <img :src="item.img" />
-        <div ref="desc" class="img__desc">{{ item.desc }}</div>
+        <img :src="item.imageUrl" />
+        <div ref="desc" class="img__desc">{{ item.title }}</div>
       </el-card>
     </div>
   </div>
 </template>
 
 <script>
+import { getLifeList } from "../../utils/http";
 export default {
   name: "WaterFall",
-  props: ["imges"],
+  // props: ["imges"],
   data() {
     return {
-      images: [
-        {
-          _id: 0,
-          img: require("../../../public/1.jpg"),
-          desc: "和实际发生事故附件是刚开始是富士康粉红色科夫斯克列夫考虑",
-        },
-        {
-          _id: 1,
-          img: require("../../../public/2.jpg"),
-          desc: "和实际发生事故附件是刚开始是",
-        },
-        {
-          _id: 2,
-          img: require("../../../public/3.jpg"),
-          desc: "和实际发生事故附件是刚开始是",
-        },
-        {
-          _id: 3,
-          img: require("../../../public/4.jpg"),
-          desc: "和实际发生事故附件是刚开始是",
-        },
-        {
-          _id: 4,
-          img: require("../../../public/5.jpg"),
-          desc: "和实际发生事故附件是刚开始是",
-        },
-        {
-          _id: 5,
-          img: require("../../../public/6.jpg"),
-          desc: "和实际发生事故附件是刚开始是",
-        },
-        {
-          _id: 6,
-          img: require("../../../public/7.jpg"),
-          desc: "和实际发生事故附件是刚开始是",
-        },
-        {
-          _id: 7,
-          img: require("../../../public/8.jpg"),
-          desc: "和实际发生事故附件是刚开始是",
-        },
-        {
-          _id: 8,
-          img: require("../../../public/1.jpg"),
-          desc: "和实际发生事故附件是刚开始是",
-        },
-        {
-          _id: 9,
-          img: require("../../../public/2.jpg"),
-          desc: "和实际发生事故附件是刚开始是",
-        },
-        {
-          _id: 10,
-          img: require("../../../public/8.jpg"),
-          desc: "和实际发生事故附件是刚开始是",
-        },
-        {
-          _id: 11,
-          img: require("../../../public/4.jpg"),
-          desc: "和实际发生事故附件是刚开始是",
-        },
-        {
-          _id: 12,
-          img: require("../../../public/4.jpg"),
-          desc: "和实际发生事故附件是刚开始是",
-        },
-        {
-          _id: 13,
-          img: require("../../../public/3.jpg"),
-          desc: "和实际发生事故附件是刚开始是",
-        },
-        {
-          _id: 14,
-          img: require("../../../public/3.jpg"),
-          desc: "和实际发生事故附件是刚开始是",
-        },
-        {
-          _id: 15,
-          img: require("../../../public/1.jpg"),
-          desc: "和实际发生事故附件是刚开始是",
-        },
-        {
-          _id: 16,
-          img: require("../../../public/1.jpg"),
-          desc: "和实际发生事故附件是刚开始是",
-        },
-      ], //存储图片资源
+      //存储图片资源
+      images: [],
       imgWidth: 350, //图片的宽度
       heightArray: [], //存储高度数组，用于判断最小高度的图片位置
       offsetP: 0,
@@ -117,8 +34,20 @@ export default {
   },
   created() {
     this.loadImgHeight();
+    this.getLifeBlog();
   },
   methods: {
+    toDetail(id) {
+      let newpage = this.$router.resolve({
+        path: `/detail/${id}`,
+      });
+      window.open(newpage.href, "_blank");
+    },
+    async getLifeBlog() {
+      const result = await getLifeList();
+      this.images = result.data.data.lifeBlog;
+      console.log(this.images);
+    },
     ImgHight() {
       var imgBox = this.$refs.img;
       var imgClientWidth = this.$refs.box.offsetWidth;
@@ -171,7 +100,8 @@ export default {
 <style scoped lang="scss">
 .waterFall-box {
   position: relative;
-  height: 2000px;
+  min-height: 2060px;
+  margin-top: 30px;
   .img-box {
     width: 350px;
     float: left;

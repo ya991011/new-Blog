@@ -1,7 +1,7 @@
 
 
 const router = require('koa-router')()
-const { getPerson, editUserInfo, getUserImage} = require('../controller/user')
+const { getPerson, editUserInfo, getUserImage, getPersonCenter} = require('../controller/user')
 
 router.prefix('/api')
 
@@ -25,5 +25,13 @@ router.post('/edituserInfo', async (ctx,next)=>{
 router.get('/getuserImage', async(ctx,next)=>{
     const tokenn = ctx.request.headers.token
     ctx.body =  await getUserImage(ctx,tokenn)
+})
+
+
+// 个人中心
+router.get('/person_center', async(ctx,next)=>{
+    const   { id }  = ctx.request.query
+    console.log(id)
+    ctx.body = await getPersonCenter(ctx,id)
 })
 module.exports = router

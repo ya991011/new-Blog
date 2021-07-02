@@ -1,5 +1,8 @@
 const Koa = require('koa')
 const app = new Koa()
+const server = require('http').createServer(app.callback());
+const io = require('socket.io')(server,{cors:true});
+server.listen(3001);
 const views = require('koa-views')
 const json = require('koa-json')
 const onerror = require('koa-onerror')
@@ -11,9 +14,8 @@ const path = require('path')
 const koaStatic = require('koa-static')
 
 
-// app.use(bodyparser({
-//   enableTypes:['json', 'form', 'text']
-// }))
+
+
 app.use(koaBody({
   multipart: true,
   formidable: {
@@ -26,11 +28,15 @@ const login = require('./routes/login')
 const upload = require('./routes/upload')
 const blog = require('./routes/blog')
 const user = require('./routes/user')
+const comm = require('./routes/comment')
+const userRelation = require('./routes/user-relation')
 
 // error handler
 onerror(app)
 
 // cors跨域处理
+
+
 app.use(cors({
   origin: function(ctx) {
     if (ctx.url === '/test') {
@@ -39,7 +45,7 @@ app.use(cors({
     return '*';
   },
   exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
-  maxAge: 5,
+  // maxAge: 5,
   credentials: true,
   allowMethods: ['GET', 'POST', 'DELETE'],
   allowHeaders: ['Content-Type', 'Authorization', 'Accept','token'],
@@ -65,10 +71,23 @@ app.use(async (ctx, next) => {
 })
 
 
+//一对一聊天
+
+io.on('connection', (socket) => {  console.log('ok')
+ });
+//存储所有用户
+// // app.io.on( event, eventHandler )
+// // The raw socket.io instance is attached as app._io if you need it
+// io.on('setName', (ctx, data) => {
+//   console.log('client sent data to message endpoint', data);
+// });
+
 app.use(login.routes(), login.allowedMethods())
 app.use(upload.routes(), upload.allowedMethods())
 app.use(blog.routes(), blog.allowedMethods())
 app.use(user.routes(), user.allowedMethods())
+app.use(comm.routes(), comm.allowedMethods())
+app.use(userRelation.routes(), userRelation.allowedMethods())
 
 
 // error-handling

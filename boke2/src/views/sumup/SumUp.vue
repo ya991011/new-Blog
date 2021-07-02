@@ -5,17 +5,17 @@
       <div class="block">
         <el-timeline>
           <el-timeline-item
-            v-for="item in article__list"
-            :key="item._id"
-            :timestamp="item.date"
+            v-for="(item, index) in article__list"
+            :key="index"
+            :timestamp="item.updatedAt"
             placement="top"
             size="large"
             color="green"
             type="danger"
           >
             <el-card>
-              <h4>{{ item.article__title }}</h4>
-              <p>{{ item.date }}</p>
+              <h4>{{ item.title }}</h4>
+              <p>{{ item.updatedAt }}</p>
             </el-card>
           </el-timeline-item>
         </el-timeline>
@@ -30,36 +30,24 @@
 import Footer from "../../components/Footer.vue";
 import Header from "../../components/Header.vue";
 import UPTop from "../../components/UPTop.vue";
+import { getAllBlog } from "../../utils/http";
 export default {
   components: { Header, Footer, UPTop },
   data() {
     return {
       reverse: true,
-      article__list: [
-        {
-          _id: 0,
-          img: require("../../../public/2.jpg"),
-          article__title: "标题",
-          article__content: "内容",
-          category: "代码",
-          date: "2021-05-20 16:33",
-          comment: 40,
-          like: 33,
-          timestamp: "2021-05-20 16:33",
-        },
-        {
-          _id: 1,
-          img: require("../../../public/4.jpg"),
-          article__title: "标题",
-          article__content: "内容",
-          category: "代码",
-          date: "2021-05-24 18:33",
-          comment: 40,
-          like: 33,
-          timestamp: "2021-05-24 18:33",
-        },
-      ],
+      article__list: [],
     };
+  },
+  created() {
+    this.getAllBlogList();
+  },
+  methods: {
+    async getAllBlogList() {
+      const result = await getAllBlog();
+      console.log(result);
+      this.article__list = result.data.data;
+    },
   },
 };
 </script>
@@ -67,6 +55,7 @@ export default {
 <style scoped lang="scss">
 .sumup {
   width: 1200px;
+  min-height: 100vh;
   margin: 0 auto;
   margin-top: 20px;
 }

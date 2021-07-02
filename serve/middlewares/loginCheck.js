@@ -4,7 +4,8 @@ const { loginCheckFailInfo } = require("../model/ErrorInfo")
 const { ErrorModel } = require("../model/ResModel")
 
 async function loginCheck(ctx, next){
-    if(ctx.token && ctx.token.userInfo){
+    const token = ctx.request.headers.token
+    if(token){
         await next()
         return
     }

@@ -7,12 +7,16 @@ import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 
 import VueSocketio from 'vue-socket.io'
+import ClientSocketIO from 'socket.io-client'
 
 
 Vue.use(new VueSocketio({
   debug: true,
   // 服务器端地址
-  connection: 'http://localhost:3001',
+  connection: ClientSocketIO.connect('http://localhost:3000/',{
+    autoConnect:false,
+    transports:['websocket']
+  }),
 }))
 
 
@@ -32,5 +36,13 @@ export const eventBus = new Vue();
 new Vue({
   router,
   store,
+  // sockets:{
+  //   connect(){
+  //     console.log('socket connected')
+  //   },
+  //   test1(){
+  //     console.log('test')
+  //   }
+  // },
   render: (h) => h(App),
 }).$mount("#app");

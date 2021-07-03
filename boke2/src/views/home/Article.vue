@@ -98,13 +98,20 @@ export default {
   methods: {
     //获取关注人列表
     async getAttention() {
-      const { id } = JSON.parse(sessionStorage.getItem("userInfo"));
-      const data = {
-        userId: id,
+      const  user  = JSON.parse(sessionStorage.getItem("userInfo"));
+      if(user){
+        const data = {
+        userId: user.id,
       };
       const result = await getAttentionList(data);
       this.attentionList = result.data.data.AttentionList;
       this.attentionNumber = result.data.data.count;
+      }else{
+        this.$message({
+          type:"primary",
+          message:"请先登录！"
+        })
+      }
     },
     toPerson(user_id) {
       this.$router.push({ path: "/personal_center", query: { id: user_id } });

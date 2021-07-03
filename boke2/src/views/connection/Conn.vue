@@ -24,7 +24,7 @@
         </section> -->
         </div>
         <div class="connection__box__Input">
-          <input type="text" class="input" v-model="message" />
+          <input type="text" class="input" v-model="setmessage" />
           <el-button type="primary" class="btn" @click="toSend">发送</el-button>
         </div>
       </div>
@@ -38,17 +38,38 @@ export default {
   name: "connection",
   data() {
     return {
-      message: [],
+      message:[],
+      setmessage: "",
+      username: "",
+      toName: this.$route.params.username,
     };
   },
-  created() {},
+  mounted() {
+    this.$socket.connect()
+    //  this.sockets.subscribe('test1',(data)=>{
+    //           console.log(data)
+    //         })
+    const user = JSON.parse(sessionStorage.getItem("userInfo"))
+    this.username = user.username
+    this.$socket.emit('setName',this.username)
+
+  },
+  created(){
+  },
   methods: {
     toSend() {
-       this.socket.on("connect", () => {
-            this.socket.emit("setName", {msg:"ssfjf"});
-          });
+      console.log(this.toName)
+       this.$socket.emit('test2',{toName:this.toName,userName:this.username,message:this.setmessage})
     }
   },
+  sockets:{
+    connect(){
+      console.log("okk")
+    },
+    test(){
+      console.log('test')
+    }
+  }
 
 };
 </script>
@@ -98,10 +119,11 @@ export default {
       border-radius: 10px;
       .input {
         margin-left: 20px;
-        width: 90px;
+        width: 900px;
         height: 50px;
         outline: none;
         border: none;
+        font-size: 30px;
         background-color: transparent;
       }
       .btn {

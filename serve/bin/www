@@ -20,6 +20,12 @@ var port = normalizePort(process.env.PORT || '3000');
  */
 
 var server = http.createServer(app.callback());
+const SocketIO = require('socket.io')
+const io = SocketIO(server,{
+  transports:['websocket']
+})
+require('../socket/conn')(io)
+
 
 /**
  * Listen on provided port, on all network interfaces.

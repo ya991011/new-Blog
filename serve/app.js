@@ -1,8 +1,5 @@
 const Koa = require('koa')
 const app = new Koa()
-const server = require('http').createServer(app.callback());
-const io = require('socket.io')(server,{cors:true});
-server.listen(3001);
 const views = require('koa-views')
 const json = require('koa-json')
 const onerror = require('koa-onerror')
@@ -71,16 +68,16 @@ app.use(async (ctx, next) => {
 })
 
 
-//一对一聊天
+// //一对一聊天
 
-io.on('connection', (socket) => {  console.log('ok')
- });
-//存储所有用户
-// // app.io.on( event, eventHandler )
-// // The raw socket.io instance is attached as app._io if you need it
-// io.on('setName', (ctx, data) => {
-//   console.log('client sent data to message endpoint', data);
-// });
+// io.on('connection', (socket) => {  console.log('ok')
+//  });
+// //存储所有用户
+// // // app.io.on( event, eventHandler )
+// // // The raw socket.io instance is attached as app._io if you need it
+// // io.on('setName', (ctx, data) => {
+// //   console.log('client sent data to message endpoint', data);
+// // });
 
 app.use(login.routes(), login.allowedMethods())
 app.use(upload.routes(), upload.allowedMethods())

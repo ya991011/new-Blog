@@ -14,16 +14,13 @@ module.exports = function(io){
           console.log(data)
           let toName = data.toName
           let msg = data.message
-          let setName = data.username
-          var toId
-          if(toId = hasName[toName]){
-              socket.to(toId).emit('message',{
+          let setName = data.setName
+              socket.to(hasName[toName]).emit('message',{
                   msg:msg,
                   to:toName,
                   setName: setName,
                   server:true
               })
-          }
         })
       })
 

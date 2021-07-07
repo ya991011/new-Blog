@@ -17,7 +17,7 @@
               ><el-avatar :src="item.user.picture" size="small"></el-avatar>
             </span>
             <span class="article__author">{{ item.user.username }}</span>
-            <span class="article__date">{{ item.updatedAt }}</span>
+            <span class="article__date">{{ item.updatedAtFormat }}</span>
             <div class="article__content" v-html="item.content"></div>
           </el-card>
           <div class="article__footer">
@@ -47,7 +47,7 @@
               ><el-avatar :src="item.user.picture" size="small"></el-avatar>
             </span>
             <span class="article__author">{{ item.user.username }}</span>
-            <span class="article__date">{{ item.updatedAt }}</span>
+            <span class="article__date">{{ item.updatedAtFormat }}</span>
             <div class="article__content">{{ item.content | snippet }}</div>
           </div>
           <div class="article__footer">

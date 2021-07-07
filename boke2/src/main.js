@@ -6,19 +6,19 @@ import "./style/assets.scss";
 import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 
-import VueSocketio from 'vue-socket.io'
-import ClientSocketIO from 'socket.io-client'
+import VueSocketio from "vue-socket.io";
+import ClientSocketIO from "socket.io-client";
 
-
-Vue.use(new VueSocketio({
-  debug: true,
-  // 服务器端地址
-  connection: ClientSocketIO.connect('http://localhost:3000/',{
-    autoConnect:false,
-    transports:['websocket']
-  }),
-}))
-
+Vue.use(
+  new VueSocketio({
+    debug: true,
+    // 服务器端地址
+    connection: ClientSocketIO.connect("http://localhost:3000/", {
+      autoConnect: false,
+      transports: ["websocket"],
+    }),
+  })
+);
 
 // 自定义指令
 Vue.filter("snippet", function (value) {

@@ -66,7 +66,7 @@
               >
                 <div class="title">{{ item.title }}</div>
                 <div class="content">{{ item.content | snippet }}</div>
-                <div class="date">{{ item.updatedAt }}</div>
+                <div class="date">{{ item.updatedAtFormat }}</div>
                 <el-tag class="category" size="small">{{ item.region }}</el-tag>
               </div>
             </div>
@@ -88,7 +88,19 @@
               <div class="username">{{ item.username }}</div>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="我的私信">角色管理</el-tab-pane>
+          <el-tab-pane label="我的私信" class="private">
+            <div class="private__latter">
+              <div class="private__latter__box" v-for="(item,index) in message" :key="index">
+                <template>
+                <div class="box__picture"><img :src="item.setName.picture" alt=""></div>
+                <div class="box__username">{{item.setName.username}}</div>
+                <div class="box__message">{{ item.msg }}</div>
+                <div class="box__time"></div>
+                </template>
+                <!-- <template><div class="box__message">{{ item.msg }}</div></template> -->
+              </div>
+            </div>
+          </el-tab-pane>
         </el-tabs>
       </div>
     </div>
@@ -108,17 +120,11 @@ export default {
     return {
       tabPosition: "left",
       userInfo: {
-        // username: "",
-        // nickname: "",
-        // phone: "",
-        // school: "",
-        // age: "",
-        // special: "",
-        // picture: "",
-        // id:1
+        // picture:''
       },
       myBlogList: [],
       fens: [],
+      message: [],
     };
   },
   created() {
@@ -126,11 +132,26 @@ export default {
     this.myBlog();
     this.getUserRelation();
   },
+  mounted() {
+    this.$socket.connect();
+    const { username } = JSON.parse(sessionStorage.getItem("userInfo"));
+    this.$socket.emit("setName", username);
+    this.sockets.subscribe("message", (data) => {
+      this.message.push(data)
+      // sessionStorage.setItem('message',JSON.stringify(this.message))
+      // if(data.to == undefined){
+      //   this.message.msg = data.msg
+      // }else{
+      //   this.message.push(data)
+      // }
+      // console.log(this.message);
+    });
+  },
   methods: {
     async query() {
       const result = await getUserInfo();
       this.userInfo = result.data.data;
-      // console.log(this.userInfo)
+      console.log(this.userInfo);
     },
     async myBlog() {
       let page = {
@@ -175,10 +196,13 @@ export default {
       const data = {
         userId: id,
       };
-      // console.log(this.userInfo.id)
       const result = await getRelation(data);
       this.fens = result.data.data.userList;
-      console.log(this.fens, result);
+    },
+  },
+  sockets: {
+    connect() {
+      console.log("连接成功！");
     },
   },
 };
@@ -204,6 +228,38 @@ export default {
     box-sizing: border-box;
     margin-top: 200px;
     height: 700px;
+    .private {
+      &__latter {
+        width: 1000px;
+        margin: 0 auto;
+        &__box {
+          overflow: hidden;
+          padding: 10px 0;
+          border-bottom: 1px solid #ddd;
+          .box__picture {
+            float: left;
+            width: 100px;
+            height: 100px;
+            img {
+              width: 100%;
+              height: 100%;
+            }
+          }
+          .box__username {
+            float: left;
+            margin-left: 10px;
+            font-size: 25px;
+          }
+          .box__message {
+            position: relative;
+            top: 60px;
+            color:#ddd;
+            right: 50px;
+            font-size: 20px;
+          }
+        }
+      }
+    }
     .fens {
       padding: 10px 30px;
       overflow: hidden;

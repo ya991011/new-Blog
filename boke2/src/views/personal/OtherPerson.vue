@@ -41,12 +41,12 @@
               <p class="input">{{ userInfo.age }}</p>
             </ul>
             <ul class="data__left">
-              <li>毕业院校:</li>
-              <p class="input">{{ userInfo.school }}</p>
-            </ul>
-            <ul class="data__left">
               <li>电话:</li>
               <p class="input">{{ userInfo.phone }}</p>
+            </ul>
+            <ul class="data__left">
+              <li>毕业院校:</li>
+              <p class="input">{{ userInfo.school }}</p>
             </ul>
           </div>
         </div>
@@ -123,9 +123,13 @@ export default {
       // this.$router.push({
       //   name:'connection',
       //   query:{
-      //     username:this.userInfo.username
+      //     user_Info:{
+      //       username:this.userInfo.username,
+      //       picture:this.userInfo.picture,
+      //       userId:this.userInfo.id
+      //     }
       //   }
-      // }),
+      // })
       const name = this.userInfo.username;
       this.$router.push(`/connection/${name}`);
     },
@@ -138,6 +142,7 @@ export default {
       this.userInfo = result.data.data.result;
       this.userImage = result.data.data.result.picture;
       this.blogList = result.data.data.result2;
+      console.log(this.userInfo);
     },
     //分页
     async handleCurrentChange(val) {
@@ -327,6 +332,7 @@ export default {
     }
     .box__right__data {
       width: 800px;
+      height: 400px;
       float: right;
       li {
         float: left;
@@ -335,7 +341,7 @@ export default {
       .input {
         float: left;
         width: 180px;
-        padding-left: 20px;
+        // padding-left: 20px;
         line-height: 62px;
         outline: none;
         border: 0;
@@ -347,13 +353,14 @@ export default {
       }
       .left__data {
         float: left;
+        width: 350px;
         .data__left {
           height: 60px;
           margin-right: 100px;
         }
       }
       .data__right {
-        float: left;
+        float: right;
         .data__left {
           height: 60px;
         }

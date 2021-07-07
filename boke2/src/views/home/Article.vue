@@ -98,19 +98,19 @@ export default {
   methods: {
     //获取关注人列表
     async getAttention() {
-      const  user  = JSON.parse(sessionStorage.getItem("userInfo"));
-      if(user){
+      const user = JSON.parse(sessionStorage.getItem("userInfo"));
+      if (user) {
         const data = {
-        userId: user.id,
-      };
-      const result = await getAttentionList(data);
-      this.attentionList = result.data.data.AttentionList;
-      this.attentionNumber = result.data.data.count;
-      }else{
+          userId: user.id,
+        };
+        const result = await getAttentionList(data);
+        this.attentionList = result.data.data.AttentionList;
+        this.attentionNumber = result.data.data.count;
+      } else {
         this.$message({
-          type:"primary",
-          message:"请先登录！"
-        })
+          type: "primary",
+          message: "请先登录！",
+        });
       }
     },
     toPerson(user_id) {
@@ -128,6 +128,7 @@ export default {
       };
       const result = await getBlogList(page);
       this.BlogList = result.data.data.blogList;
+      console.log(this.BlogList);
       this.titleBlog = result.data.data.blogList[0];
       this.newBlog = this.BlogList.slice(0, 6);
       this.homeImage = this.BlogList.slice(0, 4);

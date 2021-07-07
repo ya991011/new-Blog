@@ -12,7 +12,7 @@ async function getUserInfo(username,pass){
     //  通过用户名查找用户是否存在，存在判断密码是否与数据库相等
         const result = await User.findOne({
         where:{username},
-        attributes:['id','username','password']})
+        attributes:['id','username','password','picture']})
         if(!result){
             return result
         }

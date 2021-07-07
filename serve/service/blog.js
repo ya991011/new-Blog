@@ -2,6 +2,7 @@
 
 const {  Blog, op, User, Comm } = require('../database/model/index')
 const { PAGESIZE } = require('../config/constans')
+const { formatBlog } = require('./_format')
 
 // 引入token解析用户信息
 var jwt = require('jsonwebtoken');
@@ -50,6 +51,7 @@ async function blogList(pageIndex){
     })
 
     let blogList = result.rows.map(row=>row.dataValues)
+    blogList = formatBlog(blogList)
 
     return {
         count:result.count,
@@ -76,7 +78,9 @@ async function blogDetail(id){
     if(!result){
         return result
     }
-    return result.dataValues
+    let blogDetail = result.dataValues
+    blogDetail = formatBlog(blogDetail)
+    return blogDetail
 }
 
 
@@ -99,7 +103,7 @@ async function getMyBlog(token,page){
         ]
     })
     let blogList = result.rows.map(row=>row.dataValues)
-
+    blogList = formatBlog(blogList)
     return {
         blogList,
         count:result.count
@@ -128,6 +132,7 @@ async function getCodeBlog(page){
         ]
     })
     let codeBlog = result.rows.map(row=>row.dataValues)
+    codeBlog = formatBlog(codeBlog)
     return {
         codeBlog,
         count: result.count,
@@ -147,6 +152,7 @@ async function getLifeBlog(){
         ]
     })
     let lifeBlog = result.rows.map(row=>row.dataValues)
+    // lifeBlog = formatBlog(lifeBlog)
     return {
         lifeBlog,
         count: result.count
@@ -160,7 +166,7 @@ async function getAllBlog(token){
     const result = await Blog.findAll({
         where:{user_id},
         attributes:[
-            'title','updatedAt'
+            'title','updatedAt','createdAt'
         ],
         order:[
             ['id','desc']
@@ -169,7 +175,10 @@ async function getAllBlog(token){
     if(!result){
         return result
     }
-    return result
+    let result2 =  result.map(row=>row.dataValues)
+    console.log(result2)
+    result2 = formatBlog(result2)
+    return result2
 
 }
 
@@ -199,6 +208,7 @@ async function Serach(title){
             }
         ]
     })
+    console.log(result.blog)
     return result
 }
 

@@ -24,7 +24,9 @@
             ></el-avatar
           ></span>
           <span class="detail__author">{{ blogDetail.user.username }}</span>
-          <span class="detail__createdAt">{{ blogDetail.createdAt }}</span>
+          <span class="detail__createdAt">{{
+            blogDetail.createdAtFormat
+          }}</span>
           <span class="detail__tag"
             ><el-tag size="small">{{ blogDetail.region }}</el-tag></span
           >

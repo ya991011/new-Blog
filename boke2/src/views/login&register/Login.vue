@@ -62,6 +62,7 @@ export default {
               const userInfo = {
                 id: result.data.data.result.id,
                 username: result.data.data.result.username,
+                picture: result.data.data.result.picture,
               };
               window.sessionStorage.setItem(
                 "userInfo",

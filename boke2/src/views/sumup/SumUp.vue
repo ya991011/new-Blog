@@ -7,7 +7,7 @@
           <el-timeline-item
             v-for="(item, index) in article__list"
             :key="index"
-            :timestamp="item.updatedAt"
+            :timestamp="item.updatedAtFormat"
             placement="top"
             size="large"
             color="green"
@@ -15,7 +15,6 @@
           >
             <el-card>
               <h4>{{ item.title }}</h4>
-              <p>{{ item.updatedAt }}</p>
             </el-card>
           </el-timeline-item>
         </el-timeline>

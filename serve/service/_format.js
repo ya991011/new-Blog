@@ -1,5 +1,6 @@
 
 const { DEFAULT_PICTURE, DEFAULT_NICKNAME } = require('../config/constans')
+const { timeFormat } = require('../utils/dt')
 
 
 /**
@@ -41,7 +42,38 @@ function _formatPicture(obj){
 }
 
 
+/**
+ * 格式化数据的时间
+ * @param {Object} obj 数据
+ */
+ function _formatDBTime(obj) {
+    obj.createdAtFormat = timeFormat(obj.createdAt)
+    obj.updatedAtFormat = timeFormat(obj.updatedAt)
+    return obj
+}
+/**
+ * 格式化微博信息
+ * @param {Array|Object} list 微博列表或者单个微博对象
+ */
+ function formatBlog(list) {
+    if (list == null) {
+        return list
+    }
+
+    if (list instanceof Array) {
+        // 数组
+        return list.map(_formatDBTime)
+    }
+    // 对象
+    let result2 = list
+    result2 = _formatDBTime(result2)
+    // result = _formatContent(result)
+    return result2
+}
+
+
 module.exports = {
    formatUser,
-   _formatPicture
+   _formatPicture,
+   formatBlog
 }

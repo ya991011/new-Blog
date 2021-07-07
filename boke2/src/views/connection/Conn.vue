@@ -4,27 +4,26 @@
       <div class="box__back"></div>
       <div class="box__content">
         <div class="connection__box__title">
-          <div class="back"><i class="el-icon-arrow-left"></i></div>
-          <div class="user">用户名</div>
+          <div class="back" @click="back"><i class="el-icon-arrow-left"></i></div>
+          <div class="user">{{ this.user_Info }}</div>
         </div>
-        <div class="connection__box__content">
-          <!-- <section v-for="(setMsg, index) in message" :key="index">
-          <ul class="chatListRight" v-if="setMsg.to==toName&&setMsg.to!==username">
+        <div class="connection__box__content" id="father">
+          <section class="message-right">
+          <ul class="chatListRight" v-for="(item,index) in message" :key="index">
             <li>
-              <div class="message-right">{{ setMsg.msg }}</div>
-              <img :src="">
+              <div class="img">
+                <img :src="item.picture">
+              </div>
+              <div class="msg">{{item.message}}
+                <div class="biao"></div>
+              </div>
             </li>
           </ul>
-          <ul class="chatListLeft" v-if="setMsg.setName==toName&&setMsg.server">
-            <li>
-              <img :src="">
-              <div class="message-left">{{ setMsg.msg }}</div>
-            </li>
-          </ul>
-        </section> -->
+          </section>
         </div>
         <div class="connection__box__Input">
-          <input type="text" class="input" v-model="setmessage" />
+          <input type="text" class="input" v-model="setmessage" @keyup.enter="toSend"
+           />
           <el-button type="primary" class="btn" @click="toSend">发送</el-button>
         </div>
       </div>
@@ -33,44 +32,50 @@
 </template>
 
 <script>
-
 export default {
   name: "connection",
   data() {
     return {
-      message:[],
+      message: [],
       setmessage: "",
       username: "",
-      toName: this.$route.params.username,
+      user_Info: this.$route.params.username,
+      my_userInfo: {},
     };
   },
   mounted() {
-    this.$socket.connect()
-    //  this.sockets.subscribe('test1',(data)=>{
-    //           console.log(data)
-    //         })
-    const user = JSON.parse(sessionStorage.getItem("userInfo"))
-    this.username = user.username
-    this.$socket.emit('setName',this.username)
-
+    console.log(this.user_Info);
+    this.$socket.connect();
+    const user = JSON.parse(sessionStorage.getItem("userInfo"));
+    this.username = user.username;
+    this.$socket.emit("setName", this.username);
   },
-  created(){
-  },
+  created() {},
   methods: {
     toSend() {
-      console.log(this.toName)
-       this.$socket.emit('test2',{toName:this.toName,userName:this.username,message:this.setmessage})
+      const user = JSON.parse(sessionStorage.getItem("userInfo"));
+      this.my_userInfo = user;
+      this.message.push({
+        username:this.my_userInfo.username,
+        picture:this.my_userInfo.picture,
+        message:this.setmessage
+      })
+      this.$socket.emit("test", {
+        toName: this.user_Info,
+        setName: user,
+        message: this.setmessage,
+      });
+      this.setmessage = ''
+    },
+    back(){
+      window.history.back()
     }
   },
-  sockets:{
-    connect(){
-      console.log("okk")
+  sockets: {
+    connect() {
+      console.log("连接成功！");
     },
-    test(){
-      console.log('test')
-    }
-  }
-
+  },
 };
 </script>
 
@@ -111,8 +116,49 @@ export default {
     &__content {
       height: 1200px;
       margin: 20px 0;
-      // background: #f2f6fc;
       z-index: 2;
+      overflow: auto;
+      .message-right{
+        float: right;
+        .chatListRight{
+           margin-top: 20px;
+          li{
+            overflow: hidden;
+            list-style: none;
+            .img{
+               float: right;
+               width: 60px;
+               height: 60px;
+             img{
+              width: 100%;
+              height: 100%;
+            }
+           }
+           .msg{
+             position: relative;
+             max-width: 400px;
+             word-break: break-all;
+             padding: 10px 10px;
+             text-align: center;
+             border-radius: 10px;
+             line-height: 20px;
+             background: #3a8ee6;
+             float: right;
+             margin-right: 20px;
+             .biao{
+               position: absolute;
+               right: -10px;
+               top: 15px;
+               transform: rotateX(135deg);
+               width: 0;
+               height: 0;
+               border: 10px solid transparent;
+               border-top-color: #3a8ee6;
+             }
+           }
+          }
+        }
+      }
     }
     &__Input {
       border: 3px solid #fff;

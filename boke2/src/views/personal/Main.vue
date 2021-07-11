@@ -138,13 +138,10 @@ export default {
     this.$socket.emit("setName", username);
     this.sockets.subscribe("message", (data) => {
       this.message.push(data)
-      // sessionStorage.setItem('message',JSON.stringify(this.message))
-      // if(data.to == undefined){
-      //   this.message.msg = data.msg
-      // }else{
-      //   this.message.push(data)
-      // }
-      // console.log(this.message);
+      console.log(this.message)
+      if(this.message.to == data.to){
+        alert("3")
+      }
     });
   },
   methods: {
